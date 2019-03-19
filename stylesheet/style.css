@@ -1,0 +1,25 @@
+.raisedbox {
+  padding: 10px;
+  border: 1px solid #77aaff;
+  box-shadow: -1px 1px #77aaff,
+      -2px 2px #77aaff,
+      -3px 3px #77aaff,
+      -4px 4px #77aaff,
+      -5px 5px #77aaff;
+}
+
+.radius {
+  border-radius: 25px;
+  background: #73AD21;
+  padding: 20px;
+  width: 200px;
+  height: 150px;
+}
+.fullbackground {
+  background-image:'./images/signinbackground.jpg';
+  background-attachment: fixed ;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  filter:opacity(.9);
+}
