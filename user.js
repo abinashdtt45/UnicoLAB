@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const bcrypt = require('bcryptjs')
 
 var UserSchema = new mongoose.Schema({
     email:{
@@ -38,6 +39,22 @@ var UserSchema = new mongoose.Schema({
         type: Number,
         require: true,
         minlength: 10
+    }
+})
+
+UserSchema.pre('save',function(next){
+    var user = this
+
+    if(user.isModified('password')){
+        bcrypt.genSalt(10, (err,salt)=>{
+            bcrypt.hash(user.password, salt, (err, hash)=>{
+                user.password = hash
+                next()
+            })
+        })
+    }
+    else{
+        next()
     }
 })
 

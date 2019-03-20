@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const crypto = require('crypto-js')
+const bcrypt = require('bcryptjs')
 
 const {mongoose} = require('./mongoose')
 const {User} = require('./user.js')
@@ -40,20 +40,32 @@ app.get('/profile',(req,res)=>{
 
 app.post('/signup',(req,res)=>{
     res.redirect('/profile')
-    var password = req.body.inputpassword
-    var hashed_password = crypto.SHA256(password,'abc123')
     new User({
         name:req.body.userName,
         email:req.body.inputEmail,
-        password:hashed_password,
+        password:req.body.inputPassword,
         instituteName:req.body.instituteName,
         position:req.body.position,
         phonenumber:req.body.phonenumber
     }).save().then((docs)=>{
         console.log('User is generated', docs)
     })
-    
-    console.log(req.body);
+})
+
+app.post('/signin',(req,res)=>{
+    var email = req.body.inputEmail
+    var password = req.body.inputPassword
+    User.findOne({'email': email}).then((user)=>{
+        if(user){
+            bcrypt.compare(password, user.password, (err, result)=>{
+                if(result){
+                    res.redirect('/profile')
+                }
+            })
+        }
+    },(e)=>{
+        res.status(400).send(e)
+    })
 })
 app.listen(3000, ()=>{
     console.log('Connected to server')
