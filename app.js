@@ -30,25 +30,33 @@ app.get('/signup',(req,res)=>{
     res.render('signin')
 })
 app.get('/profile',(req,res)=>{
-    res.render('profile',{
-        name: 'Abinash Dutta'
+    var email = req.query.email
+    console.log(email)
+    User.findOne({'email': email}).then((user)=>{
+        res.render('profile',{
+            name: user.name,
+            institute: user.instituteName,
+            number: user.phonenumber,
+            profession: user.position
+        })
     })
-    console.log(req.body.userName)
+    
 })
 
 
 
 app.post('/signup',(req,res)=>{
-    res.redirect('/profile')
+    
     new User({
         name:req.body.userName,
         email:req.body.inputEmail,
         password:req.body.inputPassword,
         instituteName:req.body.instituteName,
         position:req.body.position,
-        phonenumber:req.body.phonenumber
-    }).save().then((docs)=>{
-        console.log('User is generated', docs)
+        phonenumber:req.body.phoneNumber
+    }).save().then((user)=>{
+        
+        res.redirect('/signin')
     })
 })
 
@@ -59,7 +67,7 @@ app.post('/signin',(req,res)=>{
         if(user){
             bcrypt.compare(password, user.password, (err, result)=>{
                 if(result){
-                    res.redirect('/profile')
+                    res.redirect('/profile?email='+email)
                 }
             })
         }
